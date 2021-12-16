@@ -1,0 +1,103 @@
+<odoo>
+    <data>
+        <!-- explicit list view definition -->
+        <record model="ir.ui.view" id="incubadora.list">
+            <field name="name">incubadora list</field>
+            <field name="model">incubadora.incubadora</field>
+            <field name="arch" type="xml">
+                <tree decoration-warning="loan&gt;0" >
+                <field name="name"/>
+                <field name="company_value"/>
+                <field name="money"/>
+                <field name="loan"/>
+                <field name="proyectsonboard"/>
+                </tree>
+            </field>
+            </record>
+
+         <record model="ir.ui.view" id="incubadora.incubadora_form">
+            <field name="name">incubadora incubadora form</field>
+            <field name="model">incubadora.incubadora</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="description" />
+                             <field name="start_day" />
+
+                        </group>
+                        <notebook>
+                            <page name="accounts" string="Accounts">
+                                <group>
+                                    <field name="company_value"/>
+                                    <field name="money"/>
+                                    <field name="salary_employees"/>
+                                    <field name="loaninprocess"/>
+                                    <field name="loan"/>
+                                    <button name="short_term" type="object" string="Prestamo Corto Plazo" class="oe_highlight" /> 
+                                    <button name="half_term" type="object" string="Prestamo Medio Plazo" class="oe_highlight" /> 
+                                    <button name="long_term" type="object" string="Prestamo Largo Plazo" class="oe_highlight" /> 
+                                </group>
+                            </page>
+
+                            <page name="employees" string="Employees">
+                                 <group>
+                                    <field name="employees"/>
+                                </group>
+                            </page>
+
+                            <page name="proyects" string="Proyects">
+                                 <group>
+                                    <field name="proyectsonboard"/>
+                                </group>
+                            </page>
+
+                        </notebook>   
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+                <record model="ir.ui.view" id="incubadora.incubadora_kanban">
+            <field name="name">incubadora incubadora kanban</field>
+            <field name="model">incubadora.incubadora</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="name"/>
+                    <field name="id"/>
+                    <field name="money"/>
+                    <field name="loan"/>
+                    <field name="proyectsonboard"/>
+                    <field name="quantityofemployees"/>
+                    <field name="description"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                                <div class="oe_product_vignette">
+
+                                <a type="open">
+                                    
+                                    <div class="oe_kanban_details d-flex flex-column">
+                                        <h4 class="o_kanban_record_title oe_partner_heading"><field name="name"/></h4>
+                                      
+                                        <ul>
+                                            <li><strong>Diners: </strong><field name="money"/></li>
+                                            <li><strong>Prestamo: </strong><field name="loan"/></li>
+                                            <li><strong>Projectes actius: </strong><field name="proyectsonboard"/></li>
+                                            <li><strong>Quantitat de treballadors: </strong><field name="quantityofemployees"/></li>
+                                            <li><strong>Descripció: </strong><field name="description"/></li>
+                                        </ul>
+                                    </div>
+                                </a>
+                            </div>
+
+
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+    </data>
+</odoo>

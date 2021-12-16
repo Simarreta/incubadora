@@ -1,0 +1,71 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+   
+
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="incubadora.action_window">
+      <field name="name">incubadora window</field>
+      <field name="res_model">incubadora.incubadora</field>
+      <field name="view_mode">tree,form,kanban</field>
+    </record>
+
+     <record model="ir.actions.act_window" id="incubadora.action_employee_window">
+      <field name="name">incubadora employee window</field>
+      <field name="res_model">incubadora.employee</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+     <record model="ir.actions.act_window" id="incubadora.action_proyect_window">
+      <field name="name">incubadora proyect window</field>
+      <field name="res_model">incubadora.proyect</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="incubadora.action_startproyect_window">
+      <field name="name">incubadora startproyect window</field>
+      <field name="res_model">incubadora.startproyect</field>
+      <field name="view_mode">tree,form,calendar</field>
+    </record>
+
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="incubadora.action_server">
+      <field name="name">incubadora server</field>
+      <field name="model_id" ref="model_incubadora_incubadora"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+
+    <menuitem name="Incubadora" id="incubadora.menu_root"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="Inicio" id="incubadora.menu_1" parent="incubadora.menu_root"/>
+  
+    <!-- actions -->
+
+    <menuitem name="Incubadora" id="incubadora.menu_incubadora_list" parent="incubadora.menu_1"
+              action="incubadora.action_window"/>
+
+       <menuitem name="Employees" id="incubadora.menu_employee_list" parent="incubadora.menu_1"
+              action="incubadora.action_employee_window"/>
+        <menuitem name="Proyect" id="incubadora.menu_proyect_list" parent="incubadora.menu_1"
+              action="incubadora.action_proyect_window"/>
+        <menuitem name="Start Proyect" id="incubadora.menu_startproyect_list" parent="incubadora.menu_1"
+              action="incubadora.action_startproyect_window"/>
+    
+  </data>
+</odoo>

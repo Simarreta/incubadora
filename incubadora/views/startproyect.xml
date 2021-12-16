@@ -1,0 +1,59 @@
+<odoo>
+    <data>
+          <record model="ir.ui.view" id="incubadora.startproyect_list">
+            <field name="name">incubadora list</field>
+            <field name="model">incubadora.startproyect</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="progressitobar==100">
+                <field name="name"/>
+                <field name="incubadora"/>
+                <field name="moneytowaste"/>
+                <field name="begginingday"/>
+                <field name="finishday"/>
+                <field name="progressitobar" widget="progressbar" /> 
+                </tree>
+            </field>
+        </record>    
+
+         <record model="ir.ui.view" id="incubadora.startproyect_form">
+            <field name="name">incubadora form</field>
+            <field name="model">incubadora.startproyect</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                         </group>
+                        <notebook>
+                            <page name="attributes" string="Attributes">
+                            <group> 
+                                <field name="incubadora"/>
+                                <field name="moneytowaste"/>
+                                <field name="begginingday"/>
+                                <field name="finishday"/>
+                                <field name="progressitobar" widget="progressbar" /> 
+                            </group>
+                        </page>
+                         </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>  
+
+
+        <record model="ir.ui.view" id="incubadora.startproyect_calendar">
+            <field name="name">incubadora calendar startproyect</field>
+            <field name="model">incubadora.startproyect</field>
+            <field name="arch" type="xml">
+                <calendar string="Session Calendar" date_start="begginingday"
+                          date_stop="finishday">
+                    <field name="name"/>
+                </calendar>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,39 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="incubadora.proyect_list">
+            <field name="name">incubadora list</field>
+            <field name="model">incubadora.proyect</field>
+            <field name="arch" type="xml">
+                <tree>
+                <field name="name"/>
+                <field name="kindofproyect"/>
+                <field name="moneytoearn"/>
+                <field name="quantityofemployees"/>
+                <field name="quantityoftime"/>
+                <field name="difficulty"/>
+                </tree>
+            </field>
+        </record>
+        <!-- explicit list view definition -->
+        <record model="ir.ui.view" id="incubadora.proyects_form">
+            <field name="name">incubadora form</field>
+            <field name="model">incubadora.proyect</field>
+            <field name="arch" type="xml">
+                 <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="kindofproyect"/>
+                            <field name="moneytoearn"/>
+                            <field name="quantityofemployees"/>
+                            <field name="quantityoftime"/>
+                            <field name="difficulty"/>
+                           
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
