@@ -3,7 +3,7 @@
         <!-- explicit list view definition -->
         <record model="ir.ui.view" id="incubadora.list">
             <field name="name">incubadora list</field>
-            <field name="model">incubadora.incubadora</field>
+            <field name="model">res.partner</field>
             <field name="arch" type="xml">
                 <tree decoration-warning="loan&gt;0" >
                 <field name="name"/>
@@ -17,7 +17,7 @@
 
          <record model="ir.ui.view" id="incubadora.incubadora_form">
             <field name="name">incubadora incubadora form</field>
-            <field name="model">incubadora.incubadora</field>
+            <field name="model">res.partner</field>
             <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -25,6 +25,7 @@
                             <field name="name" />
                             <field name="description" />
                              <field name="start_day" />
+                             <field name="products"/>
 
                         </group>
                         <notebook>
@@ -43,12 +44,16 @@
 
                             <page name="employees" string="Employees">
                                  <group>
+                                  <button name="%(incubadora.courses_wizard_action)d" type="action" string="Create Courses"
+                                                class="oe_highlight"/>
                                     <field name="employees"/>
                                 </group>
                             </page>
 
                             <page name="proyects" string="Proyects">
                                  <group>
+                                   <button name="%(incubadora.startproyect_wizard_action)d" type="action" string="Create Project"
+                                                class="oe_highlight"/>
                                     <field name="proyectsonboard"/>
                                 </group>
                             </page>
@@ -62,7 +67,7 @@
 
                 <record model="ir.ui.view" id="incubadora.incubadora_kanban">
             <field name="name">incubadora incubadora kanban</field>
-            <field name="model">incubadora.incubadora</field>
+            <field name="model">res.partner</field>
             <field name="arch" type="xml">
                 <kanban>
                     <field name="name"/>

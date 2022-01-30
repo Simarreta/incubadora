@@ -20,15 +20,16 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mail'],
+    'depends': ['base','mail','product','sale'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
+        'views/premium.xml',
         'views/startproyect.xml',
-        'views/incubadora.xml',
         'views/employees.xml',
+        'views/incubadora.xml',
         'views/proyect.xml',
         'views/templates.xml',
         'crons/crons.xml',

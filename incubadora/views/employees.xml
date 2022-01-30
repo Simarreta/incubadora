@@ -7,11 +7,14 @@
             <field name="arch" type="xml">
                 <tree decoration-danger="happiness&lt;20">
                 <field name="name"/>
+                <field name="betterskill"/>
                 <field name="caffeine"/>
                 <field name="happiness"/>
                 <field name="tiredness"/>
                 <field name="intelligence"/>
                 <field name="salary"/>
+                <button name="%(incubadora.courses_wizard_action)d" type="action" string="Improve Courses"
+                                                class="oe_highlight"/>
                 </tree>
             </field>
         </record>
@@ -32,7 +35,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="incubadora.employees_form">
+       <record model="ir.ui.view" id="incubadora.employees_form">
             <field name="name">incubadora employee form</field>
             <field name="model">incubadora.employee</field>
             <field name="arch" type="xml">
@@ -52,6 +55,16 @@
                                     <field name="intelligence"/>
                                     <field name="salary"/>
                                     <button name="give_caffeine" type="object" string="Dale Cafeina" class="oe_highlight" /> 
+                                </group>
+                            </page>
+                            <page name="skills" string="Skills">
+                                 <group>
+                         
+                                      <field name="intelligence"/>
+                                      <field name="programar"/>
+                                      <field name="marketing"/>
+                                      <field name="network"/>
+                                      <field name="laws"/>
                                 </group>
                             </page>
 
@@ -108,6 +121,7 @@
                                         <h4 class="o_kanban_record_title oe_partner_heading"><field name="name"/></h4>
                                       
                                         <ul>
+                                            <li><strong>Millor Habilitat: </strong><field name="betterskill"/></li>
                                             <li><strong>Salari: </strong><field name="salary"/></li>
                                             <li><strong>Intel.ligencia: </strong><field name="intelligence"/></li>
                                             <li><strong>Felicitat: </strong><field name="happiness"/></li>
@@ -126,6 +140,41 @@
             </field>
         </record>
 
+        <record model="ir.actions.act_window" id="incubadora.courses_wizard_action">
+            <field name="name">Incubadora courses wizard action</field>
+            <field name="res_model">incubadora.courses_wizard</field>
+            <field name="binding_model_id" ref="model_incubadora_employee"></field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+
+        </record>
+        <record model="ir.actions.act_window" id="incubadora.coursesdos_wizard_action">
+            <field name="name">Incubadora courses wizard action</field>
+            <field name="res_model">incubadora.courses_wizard</field>
+            <field name="binding_model_id" ref="model_incubadora_employee"></field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+
+        </record>
+
+
+        <record model="ir.ui.view" id="incubadora.courses_wizard_form">
+            <field name="name">incubadora courses wizard</field>
+            <field name="model">incubadora.courses_wizard</field>
+            <field name="arch" type="xml">
+                <form>
+            
+                    <sheet>
+                        <group states="nom">
+                            <field name="name" />
+                            <field name="descriptionCourse"/>
+                            <field name="price"/>
+                        </group>
+                    </sheet>
+                    
+                </form>
+            </field>
+        </record>
 
     </data>
 </odoo>

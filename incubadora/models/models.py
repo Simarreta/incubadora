@@ -6,10 +6,12 @@ from datetime import datetime, timedelta
 from odoo.exceptions import ValidationError
 
 class incubadora(models.Model):
-    _name = 'incubadora.incubadora'
-    _description = 'incubadora.incubadora'
+    _name = 'res.partner'
+  #  _description = 'incubadora.incubadora'
+    _inherit='res.partner'
 
-    name = fields.Char(required=True,string="Nom")
+#  name = fields.Char(required=True,string="Nom") 
+    is_player = fields.Boolean(default=False,string="Es un jugador?")
     description= fields.Text()
     money = fields.Float(default=100000, string="Diners")
     company_value = fields.Float(default=0)
@@ -20,6 +22,12 @@ class incubadora(models.Model):
     proyectsonboard=fields.One2many('incubadora.startproyect','incubadora', string="Projectes Actuals:")
     loaninprocess=fields.Char(string="Prestamo Actual:")
     loan=fields.Float(default=0,string="Cantidad prestado")
+    products=fields.Many2many(compute="_get_products")
+
+    def _get_products(self):
+        for e in self:
+         #productes=self.env['product.product'] millorar
+         e.products=10
 
     @api.depends("employees")
     def _get_employees(self):
@@ -62,12 +70,40 @@ class incubadora(models.Model):
             else:
                 e.salary_employees=0
 
+
+class incubadora_premium(models.Model):
+    _name="res.partner"
+    _inherit="res.partner"
+
+    company_value = fields.Float(default=5)
+    money = fields.Float(default=200000, string="Diners")
+    loan=fields.Float(default=0,string="Cantidad prestado")
+
+    def short_term(self):
+         for s in self:
+          s.loan=100000
+          s.loaninprocess="Corto Plazo"
+
+          
+    def long_term(self):
+         for s in self:
+          s.loan=200000
+          s.loaninprocess="Largo Plazo"
+
+          
+    def half_term(self):
+         for s in self:
+          s.loan=150000
+          s.loaninprocess="Medio Plazo"
+
+
+
 class startproyect(models.Model):
     _name = 'incubadora.startproyect'
     _description = 'Comença'
 
     name=fields.Char(compute="_get_name")
-    incubadora=fields.Many2one('incubadora.incubadora', ondelete="restrict")
+    incubadora=fields.Many2one('res.partner', ondelete="restrict",domain=[('is_player','=',True)])
     proyects=fields.Many2one('incubadora.proyect', ondelete="restrict")
     quantityofdays=fields.Integer(compute="_get_time")
     quantityofemployees=fields.Integer(compute="_get_employees", string="quantitat treballadors")
@@ -85,9 +121,14 @@ class startproyect(models.Model):
             e.moneytowaste=0
             for s in e.whoemployees:
                 e.moneytowaste=e.moneytowaste+s.salary
+                print("Diners que gastar",e.moneytowaste)
+                print("Salari",s.salary)
 
-            
-            e.moneytowaste=e.moneytowaste*(e.quantityofdays/30)
+            if(e.moneytowaste>0):
+               # e.moneytowaste=0 PER A QUAN EXPLOTA
+                e.moneytowaste=e.moneytowaste/(e.quantityofdays/30)
+            if(e.moneytowaste<=0):
+                e.moneytowaste=0
             
 
     @api.depends("proyects")
@@ -121,23 +162,164 @@ class startproyect(models.Model):
             dies=(hui-f.begginingday).total_seconds()/60/60/24
             #print(dies/f.quantityofdays*100)
             #f.progressitobar=dies/f.quantityofdays*100
-            if((dies/f.quantityofdays*100)<100):
-                f.progressitobar=(dies/f.quantityofdays*100)
-            else:
-                f.progressitobar=100
-                f.incubadora.money=f.incubadora.money+f.proyects.moneytoearn-f.proyects.moneytowaste
-                for s in f.whoemployees:
-                    s.happiness=100
-                    s.intelligence=s.intelligencestatic
+            if(f.quantityofdays!=0):
+                if((dies/f.quantityofdays*100)<100):
+                    f.progressitobar=(dies/f.quantityofdays*100)
+                else:
+                    f.progressitobar=100
+                    f.incubadora.money=f.incubadora.money+f.proyects.moneytoearn-f.moneytowaste
+                    for s in f.whoemployees:
+                        s.happiness=100
+                        s.intelligence=s.intelligencestatic
+                        
             if(f.progressitobar==0):
                 f.write({'state':'preparation'})
             if(f.progressitobar==100):
                 f.write({'state':'finished'})
             else:
                 f.write({'state':'inprogress'})
-            
+                
+class startproyect_wizard(models.TransientModel):
+    _name = 'incubadora.startproyect_wizard'
+    _description = 'Wizard of travels'    
+
+    name=fields.Char(compute="_get_name")
+    incubadora=fields.Many2one('res.partner', ondelete="restrict",domain=[('is_player','=',True)])
+    proyects=fields.Many2one('incubadora.proyect', ondelete="restrict")
+    quantityofdays=fields.Integer(compute="_get_time")
+    quantityofemployees=fields.Integer(compute="_get_employees", string="quantitat treballadors")
+    moneytowaste = fields.Float(compute="_get_salary",string="Cost",help="Els diners que et costarà el projecte")
+    whoemployees=fields.Many2many("incubadora.employee")
+    begginingday=fields.Datetime(string= "data d'inici",default=lambda self: fields.Date.today())
+    finishday=fields.Date(compute="_get_end", string="data final")
+    state = fields.Selection([('nom','Nom'),('employees','Employees'),('dies','Dies'),('diners','Diners')], default = 'nom')
+
+    def next(self):
+        state = self.state
+        if state == 'nom':
+            self.state = 'employees'
+        elif state == 'employees':
+            self.state = 'dies'
+        elif state == 'dies':
+            self.state = 'diners'
+
+        return {
+            'name': 'Incubadora startproyect wizard action',
+            'type': 'ir.actions.act_window',
+            'res_model': self._name,
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new'
+        }
+
+    def previous(self):
+        state = self.state
+        if state == 'employees':
+            self.state = 'nom'
+        elif state == 'dies':
+            self.state = 'employees'
+        elif state == 'diners':
+            self.state = 'dies'
+    
+        return {
+            'name': 'Incubadora startproyect wizard action',
+            'type': 'ir.actions.act_window',
+            'res_model': self._name,
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new'
+        }
+
+    def create_proyect(self):
+        proyect=self.env['incubadora.startproyect'].create({
+            'name':self.name,
+            'incubadora':self.incubadora.id,
+            'quantityofdays':self.quantityofdays.id,
+            'quantityofemployees':self.quantityofemployees,
+            'state': 'preparation',
+            'moneytowaste':self.moneytowaste,
+            'whoemployees':self.whoemployees.ids,
+            'begginingday':self.begginingday,
+            'finishday':self.finishday
+        })
+        return {
+            'name': 'Incubadora startproyect',
+            'type': 'ir.actions.act_window',
+            'res_model': 'incubadora.startproyect',
+            'res_id': proyect.id,
+            'view_mode': 'form',
+            'target': 'current'
+        }
+
+    @api.depends("whoemployees")
+    def _get_salary(self):
+        for e in self:
+            e.moneytowaste=0
+            for s in e.whoemployees:
+                e.moneytowaste=e.moneytowaste+s.salary
+                print("Diners que gastar",e.moneytowaste)
+                print("Salari",s.salary)
+
+            if(e.moneytowaste>0):
+                e.moneytowaste=e.moneytowaste/(e.quantityofdays/30)
+            if(e.moneytowaste<=0):
+                e.moneytowaste=0
             
 
+    @api.depends("proyects")
+    def _get_employees(self):
+        for e in self:
+            e.quantityofemployees=e.proyects.quantityofemployees
+
+    @api.depends("quantityofdays")
+    def _get_end(self):
+        for f in self:
+            data = fields.Datetime.from_string(f.begginingday)
+            data = data + timedelta(days=f.quantityofdays)
+            f.finishday = fields.Datetime.to_string(data)
+    
+    @api.depends("proyects")
+    def _get_time(self):
+        for t in self:
+            t.quantityofdays=t.proyects.quantityoftime
+
+    @api.depends("proyects")
+    def _get_name(self):
+        for e in self:
+            e.name=e.proyects.name
+
+
+class product_premium(models.Model):
+    _name = 'product.template'
+    _inherit = 'product.template'
+
+    is_premium = fields.Boolean(default=False)
+
+    
+class startproyect_premium(models.Model):
+    _name="sale.order"
+    _inherit="sale.order"
+   
+
+    quantityofemployees=fields.Integer(compute="_get_employees", string="quantitat treballadors")
+    proyects=fields.Many2one('incubadora.proyect', ondelete="restrict") 
+
+    quantityofdays=fields.Integer(compute="_get_time")
+
+    @api.depends("proyects")
+    def _get_employees(self):
+        for e in self:
+            e.quantityofemployees=e.proyects.quantityofemployees-2
+
+    @api.depends("proyects")
+    def _get_time(self):
+        for t in self:
+            if(t.quantityofdays==90):
+                 t.quantityofdays=t.proyects.quantityoftime-45
+            if(t.quantityofdays==60):
+                 t.quantityofdays=t.proyects.quantityoftime-30
+            if(t.quantityofdays==30):
+                 t.quantityofdays=t.proyects.quantityoftime-15
 
 class proyect(models.Model):
     _name = 'incubadora.proyect'
@@ -240,7 +422,7 @@ class employee(models.Model):
         return random.choice(firstname)+" "+random.choice(lastname)
 
     name = fields.Char(default=_generate_name)
-    incubadora = fields.Many2many('incubadora.incubadora')
+    incubadora = fields.Many2many('res.partner')
     caffeine=fields.Float(default=50)
     happiness=fields.Float(default=100)
     tiredness=fields.Float(default=0)
@@ -251,8 +433,39 @@ class employee(models.Model):
     intelligence=fields.Float(default=lambda r: random.randint(90,150))
     image = fields.Image(max_width=200, max_height=200)
     quantityofjobs=fields.Integer(compute="_get_job")
-    
+    programar=fields.Integer(default=lambda r: random.randint(0,5))
+    marketing=fields.Integer(default=lambda r: random.randint(0,5))
+    network=fields.Integer(default=lambda r: random.randint(0,5))
+    laws=fields.Integer(default=lambda r: random.randint(0,5))
+    betterskill=fields.Char(compute="_get_skill")
     quantityofprojects=fields.Integer(compute="_get_project")
+
+    
+    def _get_skill(self):
+        for s in self:
+            s.betterskill="No té cap habilitat"
+            if(s.programar>s.network):
+                if(s.programar>s.laws):
+                    if(s.programar>s.marketing):
+                        s.betterskill="programar"
+
+            if(s.network>s.programar):
+                if(s.network>s.laws):
+                    if(s.network>s.marketing):
+                        s.betterskill="network"
+
+            if(s.laws>s.programar):
+                if(s.laws>s.network):
+                    if(s.laws>s.marketing):
+                        s.betterskill="laws"
+                        
+            if(s.marketing>s.programar):
+                if(s.marketing>s.network):
+                    if(s.marketing>s.laws):
+                        s.betterskill="marketing"
+               
+
+
 
     @api.depends('intelligence')
     def _get_intelligence(self):
@@ -275,11 +488,22 @@ class employee(models.Model):
         for c in self:
             c.caffeine=c.caffeine+25
             c.happiness=c.happiness+10
+            c.tiredness=c.tiredness-15
             c.incubadora.money=c.incubadora.money-250
-            if(c.caffeine>100):
-                c.intelligence=c.intelligence-5
-            else:
-                c.tiredness=c.tiredness-15
+
+            if(c.happiness>100):
+                c.happiness=100
+
+            if(c.tiredness<0):
+                c.tiredness=0
+            
+
+    @api.constrains('caffeine')
+    def _check_caffeine(self):
+         for e in self:
+          if(e.caffeine>100):
+              e.caffeine=100
+              raise ValidationError('Demasiado café. Relajate')
 
             
             
@@ -329,7 +553,85 @@ class employee(models.Model):
               s.tiredness=0
 
         
+class courses_wizard(models.TransientModel):
+    _name = 'incubadora.courses_wizard'
+    _description = 'Wizard of travels'    
 
+    name=fields.Selection([('programar','Programar'),('marketing','Marketing'),('network','Network'),('laws','Laws')],default="programar")
+    #employee=fields.Many2one('incubadora.employee')
+    descriptionCourse=fields.Char(compute="_get_description",string="Descripció curs")
+    price=fields.Float(default=0)
+    state = fields.Selection([('nom','Nom'),('employees','Employees'),('dies','Dies'),('diners','Diners')], default = 'nom')
 
+    def next(self):
+        state = self.state
+        if state == 'nom':
+            self.state = 'employees'
+        elif state == 'employees':
+            self.state = 'dies'
+        elif state == 'dies':
+            self.state = 'diners'
 
-           
+        return {
+            'name': 'Incubadora courses wizard action',
+            'type': 'ir.actions.act_window',
+            'res_model': self._name,
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new'
+        }
+
+    def previous(self):
+        state = self.state
+        if state == 'employees':
+            self.state = 'nom'
+        elif state == 'dies':
+            self.state = 'employees'
+        elif state == 'diners':
+            self.state = 'dies'
+    
+        return {
+            'name': 'Incubadora courses wizard action',
+            'type': 'ir.actions.act_window',
+            'res_model': self._name,
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new'
+        }
+
+    @api.depends('name')
+    def _get_name(self):
+        for n in self:
+            if (n.name=='programar'):
+                n.programar+=1
+            if (n.name=='marketing'):
+                n.marketing+=1
+            if(n.name=='network'):
+                n.network+=1
+            if(n.name=='laws'):
+                n.laws+=1
+        
+        
+
+    @api.depends('name')
+    def _get_description(self):
+        for n in self:
+            n.descriptionCourse=""
+            if (n.name=='rogramar'):
+                n.descriptionCourse="Aumenta 1 punt en l'habilitat de Programar"
+            if (n.name=='marketing'):
+                n.descriptionCourse="Aumenta 1 punt en l'habilitat de Marketing"
+            if(n.name=='network'):
+                n.descriptionCourse="Aumenta 1 punt en l'habilitat de Network"
+            if(n.name=='laws'):
+                n.descriptionCourse="Aumenta 1 punt en l'habilitat de Laws"
+
+    def _get_origin(self):
+        employee = self.env.context.get('employee_context')
+        return employee
+
+    def _get_player(self):
+        incubadora = self.env.context.get('incubadora_context')
+        return incubadora
+
+      

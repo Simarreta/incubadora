@@ -6,11 +6,11 @@
 
 
     <!-- actions opening views on models -->
-    <record model="ir.actions.act_window" id="incubadora.action_window">
-      <field name="name">incubadora window</field>
-      <field name="res_model">incubadora.incubadora</field>
-      <field name="view_mode">tree,form,kanban</field>
-    </record>
+  <!-- <record model="ir.actions.act_window" id="incubadora.action_window">
+      <field name="name">incubadora incubadora window</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>-->
 
      <record model="ir.actions.act_window" id="incubadora.action_employee_window">
       <field name="name">incubadora employee window</field>
@@ -30,6 +30,19 @@
       <field name="view_mode">tree,form,calendar</field>
     </record>
 
+  
+
+    <record model="ir.actions.act_window" id="incubadora.action_window">
+            <field name="name">Player window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain"> [('is_player','=',True)]</field>
+            <field name="context">{'default_is_player': True}</field> 
+            <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('incubadora.incubadora_kanban')}),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('incubadora.list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('incubadora.incubadora_form')})]" />
+    </record>
 
     <!-- server action to the one above -->
 <!--
@@ -66,6 +79,7 @@
               action="incubadora.action_proyect_window"/>
         <menuitem name="Start Proyect" id="incubadora.menu_startproyect_list" parent="incubadora.menu_1"
               action="incubadora.action_startproyect_window"/>
+    
     
   </data>
 </odoo>
