@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_incubadora_employee,incubadora.employee,model_incubadora_employee,base.group_user,1,1,1,1
+access_incubadora_proyect,incubadora.proyect,model_incubadora_proyect,base.group_user,1,1,1,1
+access_incubadora_startproyect,incubadora.startproyect,model_incubadora_startproyect,base.group_user,1,1,1,1
+access_incubadora_startproyect_wizard,incubadora.startproyect_wizard,model_incubadora_startproyect_wizard,base.group_user,1,1,1,1
+access_incubadora_battleofstartups_wizard,incubadora.battleofstartups_wizard,model_incubadora_battleofstartups_wizard,base.group_user,1,1,1,1
+access_incubadora_courses_wizard,incubadora.courses_wizard,model_incubadora_courses_wizard,base.group_user,1,1,1,1

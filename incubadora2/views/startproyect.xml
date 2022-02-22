@@ -1,0 +1,112 @@
+<odoo>
+    <data>
+          <record model="ir.ui.view" id="incubadora.startproyect_list">
+            <field name="name">incubadora list</field>
+            <field name="model">incubadora.startproyect</field>
+            <field name="arch" type="xml">
+                <tree decoration-muted="progressitobar==100" decoration-warning="moneytowaste==0">
+                <field name="name"/>
+                <field name="incubadora"/>
+                <field name="moneytowaste"/>
+                <field name="begginingday"/>
+                <field name="finishday"/>
+                <field name="progressitobar" widget="progressbar" /> 
+                </tree>
+            </field>
+        </record>    
+
+         <record model="ir.ui.view" id="incubadora.startproyect_form">
+            <field name="name">incubadora form</field>
+            <field name="model">incubadora.startproyect</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="proyects"/>
+                         </group>
+                        <notebook>
+                            <page name="attributes" string="Attributes">
+                            <group> 
+                                <field name="incubadora"/>
+                                 <field name="whoemployees"/>
+                                 <field name="betterSkill"/>
+                                 <field name="moneytoearn"/>
+                                <field name="moneytowaste"/>
+                                <field name="begginingday"/>
+                                <field name="finishday"/>
+                                <field name="progressitobar" widget="progressbar" /> 
+                            </group>
+                        </page>
+                         </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>  
+
+
+        <record model="ir.ui.view" id="incubadora.startproyect_calendar">
+            <field name="name">incubadora calendar startproyect</field>
+            <field name="model">incubadora.startproyect</field>
+            <field name="arch" type="xml">
+                <calendar string="Session Calendar" date_start="begginingday"
+                          date_stop="finishday">
+                    <field name="name"/>
+                </calendar>
+            </field>
+        </record>
+
+          <record model="ir.actions.act_window" id="incubadora.startproyect_wizard_action">
+            <field name="name">Incubadora startproyect wizard action</field>
+            <field name="res_model">incubadora.startproyect_wizard</field>
+            <field name="binding_model_id" ref="model_incubadora_startproyect"></field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+
+        </record>
+
+         <record model="ir.ui.view" id="incubadora.startproyect_wizard_form">
+            <field name="name">incubadora startproyect wizard</field>
+            <field name="model">incubadora.startproyect_wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+                        <group states="nom">
+                            <field name="name" />
+                            <field name="incubadora"/>
+                            <field name="proyects"/>
+                        </group>
+                        <group states="employees">
+                            <field name="quantityofemployees"/>
+                            <field name="whoemployees" />
+                        </group>
+                        <group states="dies">
+                            <field name="quantityofdays"/>
+                            <field name="begginingday"/>
+                            <field name="finishday"/>
+                        </group>
+                        <group states="diners">
+                            <field name="moneytoearn"/>
+                            <field name="moneytowaste"/>
+                            <field name="total"/>
+                        </group>
+                          <footer>
+                            <button name="previous" type="object" string="Previous" class="oe_highlight" states="employees,dies,diners" />
+                            <button name="next" type="object" string="Next" class="oe_highlight" states="nom,employees,dies" />
+                            <button name="create_proyect" type="object" string="Create Project" class="oe_highlight" states="diners" />
+                            <button special="cancel" string="Cancel"/>
+                        </footer>
+                    </sheet>
+
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

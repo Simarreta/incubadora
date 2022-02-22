@@ -1,0 +1,83 @@
+<odoo>
+    <data>
+
+     <record model="ir.ui.view" id="incubadora.battleofstartups_list">
+            <field name="name">incubadora list</field>
+            <field name="model">incubadora.startproyect</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="incubadoraPlayerOne"/>
+                    <field name="incubadoraPlayerTwo"/>
+                    <field name="progressitobar" widget="progressbar" />             
+                </tree>
+            </field>
+     </record>
+      
+
+        <record model="ir.actions.act_window" id="incubadora.battleofstartups_wizard_action">
+            <field name="name">Incubadora battleofstartups wizard action</field>
+            <field name="res_model">incubadora.battleofstartups_wizard</field>
+            <field name="binding_model_id" ref="model_incubadora_startproyect"></field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+         <record model="ir.ui.view" id="incubadora.battleofstartups_wizard_form">
+            <field name="name">incubadora battleofstartups wizard</field>
+            <field name="model">incubadora.battleofstartups_wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+                        <group states="proyect">
+                            <field name="name"/>
+                            <field name="proyects"/>
+                            <field name="moneytoearn"/>
+                            <field name="quantityofdays"/>
+                            <field name="begginingday"/>
+                            <field name="finishday"/>
+                        </group>
+                        <group states="incubadorauno">
+                            <field name="quantityofemployees"/>
+                            <field name="incubadoraPlayerOne"/>
+                            <field name="employeesPlayerOne">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="programar"/>
+                                    <field name="marketing"/>
+                                    <field name="network"/>
+                                    <field name="laws"/>
+                                </tree>
+                            </field>
+                            <field name="betterSkill"/>
+                        </group>
+                        <group states="incubadorados">
+                            <field name="quantityofemployees"/>
+                            <field name="incubadoraPlayerTwo"/>
+                            <field name="employeesPlayerTwo">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="programar"/>
+                                    <field name="marketing"/>
+                                    <field name="network"/>
+                                    <field name="laws"/>
+                                </tree>
+                            </field>
+                            <field name="betterSkill2"/>
+                        </group>
+                          <footer>
+                            <button name="previous" type="object" string="Previous" class="oe_highlight" states="incubadorauno,incubadorados" />
+                            <button name="next" type="object" string="Next" class="oe_highlight" states="proyect,incubadorauno" />
+                            <button name="create_battle" type="object" string="Create Battle" class="oe_highlight" states="incubadorados" />
+                            <button special="cancel" string="Cancel"/>
+                        </footer>
+                    </sheet>
+
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

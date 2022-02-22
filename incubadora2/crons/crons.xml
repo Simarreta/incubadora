@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data >
+        <record model="ir.cron" forcecreate="True" id="incubadora.cron_life_update">
+            <field name="name">Incubadora: Cron Life Update</field>
+            <field name="model_id" ref="model_incubadora_employee"/>
+            <field name="state">code</field>
+            <field name="code">model.update_life()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">24</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="activity_user_type">specific</field>
+            <field name="doall" eval="False" />
+        </record>
+
+    </data>
+
+</odoo>

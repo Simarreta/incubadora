@@ -1,0 +1,195 @@
+<odoo>
+    <data>
+        <!-- explicit list view definition -->
+        <record model="ir.ui.view" id="incubadora.employees_list">
+            <field name="name">incubadora employee list</field>
+            <field name="model">incubadora.employee</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="happiness&lt;20">
+                <field name="name"/>
+                <field name="betterskill"/>
+                <field name="caffeine"/>
+                <field name="happiness"/>
+                <field name="tiredness"/>
+                <field name="intelligence"/>
+                <field name="salary"/>
+                <button name="%(incubadora.courses_wizard_action)d" type="action" string="Improve Courses"
+                                                context="{'incubadora_context':parent.id,'employee_context':active_id}"
+                                                class="oe_highlight"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="incubadora.employees_search">
+            <field name="name">incubadora employee search</field>
+            <field name="model">incubadora.employee</field>
+            <field name="arch" type="xml">
+                <search>
+                <field name="name"/>
+                <field name="caffeine"/>
+                <field name="happiness"/>
+                <field name="tiredness"/>
+                <field name="intelligence" string="Més sabuts" filter_domain="[('intelligence','>=','self')]"/>
+                <field name="salary" invisible="1"/>
+                <filter name="salaryview" string="Més salari" domain="[('salaryview','&gt;=',1500)]"></filter> 
+                </search>
+            </field>
+        </record>
+
+       <record model="ir.ui.view" id="incubadora.employees_form">
+            <field name="name">incubadora employee form</field>
+            <field name="model">incubadora.employee</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="image" widget="image" />
+
+                        </group>
+                        <notebook>
+                            <page name="attributes" string="Attributes">
+                                <group> 
+                                    <field name="caffeine"/>
+                                    <field name="happiness"/>
+                                    <field name="tiredness"/>
+                                    <field name="intelligence"/>
+                                    <field name="salary"/>
+                                    <button name="give_caffeine" type="object" string="Dale Cafeina" class="oe_highlight" /> 
+                                </group>
+                            </page>
+                            <page name="skills" string="Skills">
+                                 <group>
+                         
+                                      <field name="intelligence"/>
+                                      <field name="programar"/>
+                                      <field name="marketing"/>
+                                      <field name="network"/>
+                                      <field name="laws"/>
+                                </group>
+                            </page>
+
+                            <page name="incubadora" string="Incubadoras">
+                                 <group>
+                                    <field name="incubadora"/>
+                                    <field name="quantityofjobs"/>
+                                </group>
+                            </page>
+
+                            <page name="proyects" string="Proyects">
+                                 <group>
+                                    <field name="proyectonboard"/>
+                                </group>
+                            </page>
+
+                        </notebook>   
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="incubadora.employees_kanban">
+            <field name="name">incubadora employee kanban</field>
+            <field name="model">incubadora.employee</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="name"/>
+                    <field name="id"/>
+                    <field name="image"/>
+                    <field name="incubadora"/>
+                    <field name="caffeine"/>
+                    <field name="happiness"/>
+                    <field name="tiredness"/>
+                    <field name="salary"/>
+                    <field name="proyectonboard"/>
+                    <field name="intelligence"/>
+                    <templates>
+                        <t t-name="kanban-box">
+
+                           <!-- <div t-attf-class="oe_kanban_card o_kanban_record_has_image_fill ">
+                                <div class="o_kanban_image_fill_left o_kanban_image_full d-none d-md-block employee_img_kanban"
+                                     t-attf-style="background-image:url('#{kanban_image('incubadora.employee', 'image', placeholder)}')">
+                                </div>-->
+                                <div class="oe_product_vignette">
+
+                                <a type="open">
+                                    <img class="oe_kanban_image"
+                                        t-att-alt="record.name.value"
+                                        t-att-src="kanban_image('incubadora.employee','image',record.id.value)"/>
+                                    </a>
+                                    <div class="oe_kanban_details d-flex flex-column">
+                                        <h4 class="o_kanban_record_title oe_partner_heading"><field name="name"/></h4>
+                                      
+                                        <ul>
+                                            <li><strong>Millor Habilitat: </strong><field name="betterskill"/></li>
+                                            <li><strong>Salari: </strong><field name="salary"/></li>
+                                            <li><strong>Intel.ligencia: </strong><field name="intelligence"/></li>
+                                            <li><strong>Felicitat: </strong><field name="happiness"/></li>
+                                            <li><strong>Cansansi: </strong><field name="tiredness"/></li>
+                                            <li><strong>Cafeina: </strong><field name="caffeine"/></li>
+                                            <li><strong>Projectes Actius: </strong><field name="proyectonboard"/></li>
+                                        </ul>
+                                    </div>
+                                
+                            </div>
+
+
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="incubadora.courses_wizard_action">
+            <field name="name">Incubadora courses wizard action</field>
+            <field name="res_model">incubadora.courses_wizard</field>
+            <field name="binding_model_id" ref="model_incubadora_employee"></field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+
+        </record>
+     
+
+
+        <record model="ir.ui.view" id="incubadora.courses_wizard_form">
+            <field name="name">incubadora courses wizard</field>
+            <field name="model">incubadora.courses_wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                           <field name="state" widget="statusbar"></field>
+                    </header>
+                    <sheet>
+                        <group states="employees">
+                           <field name="employee"/>
+                           <field name="programPoints"/>
+                            <field name="netPoints"/>
+                            <field name="lawsPoints"/>
+                            <field name="markPoints"/>         
+                        </group>
+                         <group states="course">
+                            <field name="name"/>
+                            <field name="descriptionCourse"/>
+                        </group>
+                        <group states="pay">
+                            <field name="descriptionCourse"/>
+                            <field name="incubadores"/>
+                            <field name="improve"/>
+                            <field name="price"/>
+                        </group>
+                        <footer>
+                             <button name="previous" type="object" string="Previous" class="oe_highlight" states="course,pay" />
+                             <button name="next" type="object" string="Next" class="oe_highlight" states="course,employees" />
+                          
+                             <button name="create_course" type="object" string="Create Course" class="oe_highlight" states="pay" />
+                             <button special="cancel" string="Cancel" states="course,employees,pay"/>
+                        </footer>
+                    </sheet> 
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
